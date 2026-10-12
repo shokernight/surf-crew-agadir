@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="SURF CREW Agadir">
+  <defs>
+    <linearGradient id="fa" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00E5FF"/>
+      <stop offset="1" stop-color="#0a7f96"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="#061525"/>
+  <circle cx="32" cy="24" r="11" fill="url(#fa)"/>
+  <path d="M21 24h22M32 13v22" stroke="#04121f" stroke-width="4" stroke-linecap="round"/>
+  <path d="M10 42c5-5 10-5 15 0s10 5 15 0 10-5 14-1v13c-4-4-9-4-14 1s-10 5-15 0-10-5-15 0z" fill="url(#fa)"/>
+</svg>

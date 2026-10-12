@@ -1,0 +1,17 @@
+{
+  "note": "Seed file. scripts/build-catalog.js regenerates this on every Netlify deploy from the .md files in this folder, so you never edit it by hand. To add a wetsuit, add a .md file (or use the admin panel at /admin).",
+  "count": 6,
+  "featured": [
+    "wetsuit-3-2mm-black",
+    "wetsuit-4-3mm-winter",
+    "wetsuit-4-3mm-steamer"
+  ],
+  "files": [
+    "wetsuit-2-2mm-summer.md",
+    "wetsuit-3-2mm-black.md",
+    "wetsuit-3-2mm-blue.md",
+    "wetsuit-4-3mm-steamer.md",
+    "wetsuit-4-3mm-winter.md",
+    "wetsuit-5-4mm-semi-dry.md"
+  ]
+}

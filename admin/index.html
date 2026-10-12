@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<!--
+  SURF CREW Agadir — admin panel (Decap CMS)
+  ------------------------------------------------------------------
+  1. Site must be connected to GitHub through Netlify (Git Gateway).
+  2. Netlify dashboard: Identity > Enable Identity, then
+     Identity > Services > Git Gateway > Enable.
+  3. Invite your own email under Identity > Invite users.
+  4. Log in at  https://YOUR-SITE.netlify.app/admin
+  Editing a wetsuit writes a Markdown file in content/products/ and
+  Netlify republishes the catalogue automatically.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Content Manager — SURF CREW Agadir</title>
+  <link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <!-- Include the Decap CMS script. -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script src="https://unpkg.com/decap-cms@^3.1.0/dist/decap-cms.js"></script>
+  <script>
+    /* After a successful Netlify Identity login, hand the token to Decap. */
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", function (user) {
+        if (!user) {
+          window.netlifyIdentity.on("login", function () {
+            document.location.href = "/admin/";
+          });
+        }
+      });
+    }
+  </script>
+</body>
+</html>

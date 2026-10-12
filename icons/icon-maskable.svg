@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="SURF CREW Agadir maskable app icon">
+  <defs>
+    <linearGradient id="accentM" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00E5FF"/>
+      <stop offset="1" stop-color="#0a7f96"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="#061525"/>
+  <path d="M128 300c26-26 52-26 78 0s52 26 78 0 52-26 100-6v54c-48-20-74-20-100 6s-52 26-78 0-52-26-78 0z" fill="url(#accentM)"/>
+  <circle cx="256" cy="196" r="54" fill="url(#accentM)"/>
+  <path d="M202 196h108M256 142v108" stroke="#04121f" stroke-width="16" stroke-linecap="round"/>
+</svg>

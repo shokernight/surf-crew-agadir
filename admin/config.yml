@@ -1,0 +1,70 @@
+# =============================================================================
+# SURF CREW Agadir — Decap CMS configuration
+# Backend: git-gateway (works with Netlify Identity, no server needed)
+# Each wetsuit is one Markdown file in content/products/
+# =============================================================================
+
+backend:
+  name: git-gateway
+  branch: main # must match your GitHub default branch
+
+# Where photos uploaded in the panel are stored and what URL is written
+# into the Markdown file. Netlify publishes the repo root, so the public path
+# is the same as the repo path (no leading slash).
+media_folder: "images/uploads"
+public_folder: "images/uploads"
+
+# Let the owner preview a suit photo before saving
+logo_url: /images/favicon.svg
+
+publish_mode: simple
+
+collections:
+  - name: "products"
+    label: "Wetsuits for rent"
+    label_singular: "Wetsuit"
+    description: >-
+      Add, edit or remove wetsuit rentals. Sizes are S, M, L or XL.
+      Mark a suit "Out of stock" instead of deleting it so you keep its photos.
+    folder: "content/products"
+    create: true
+    delete: true
+    slug:
+      encoding: "ascii"
+      clean_accents: true
+    preview_path: "/#catalog-section"
+    summary: "{{name}} — size {{size}} — {{price}} MAD ({{stock}})"
+    sortable_fields: ["name", "size", "price", "stock"]
+    view_groups:
+      - label: "Size"
+        field: size
+      - label: "Stock"
+        field: stock
+    fields:
+      - { name: "name", label: "Wetsuit name", widget: "string", hint: "Example: Wetsuit 3/2mm Black" }
+      - name: "size"
+        label: "Size"
+        widget: "select"
+        options: ["S", "M", "L", "XL"]
+        hint: "Filter chips on the shop use exactly these four sizes."
+      - name: "category"
+        label: "Category"
+        widget: "select"
+        default: "Wetsuit"
+        options: ["Wetsuit"]
+        hint: "This shop rents wetsuits only."
+      - { name: "thickness", label: "Thickness", widget: "string", hint: "Example: 3/2mm Summer or 5/4mm Semi-Dry" }
+      - { name: "price", label: "Price (MAD per day)", widget: "number", value_type: "int", min: 0, step: 10 }
+      - name: "stock"
+        label: "Stock"
+        widget: "select"
+        default: "available"
+        options:
+          - { label: "Available", value: "available" }
+          - { label: "Last one", value: "last" }
+          - { label: "Out of stock", value: "out" }
+        hint: "Out of stock keeps the card but disables its WhatsApp button."
+      - { name: "image", label: "Photo", widget: "image", choose_url: false, hint: "Shoot the suit on a hanger in daylight — that sells best." }
+      - { name: "description", label: "Short description", widget: "text", hint: "One or two sentences shown under the photo." }
+      - { name: "featured", label: "Featured on the home page", widget: "boolean", default: false, required: false }
+      - { name: "body", label: "Full details (optional)", widget: "markdown", required: false, hint: "Shown in the enlarged photo view." }

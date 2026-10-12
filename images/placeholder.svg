@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" role="img" aria-label="Wetsuit photo coming soon">
+  <defs>
+    <linearGradient id="pbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0e2a4d"/>
+      <stop offset="1" stop-color="#08192c"/>
+    </linearGradient>
+    <linearGradient id="pacc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00E5FF"/>
+      <stop offset="1" stop-color="#0a7f96"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="500" fill="url(#pbg)"/>
+  <g opacity="0.95">
+    <!-- simple wetsuit silhouette -->
+    <path d="M168 108c0-9 7-16 16-16h32c9 0 16 7 16 16v18h22c10 0 18 8 18 18v78c0 7-5 12-12 12s-12-5-12-12v-52l-18 4v208c0 8-6 14-14 14h-12c-8 0-14-6-14-14V250h-12v132c0 8-6 14-14 14h-12c-8 0-14-6-14-14V162l-18-4v52c0 7-5 12-12 12s-12-5-12-12v-78c0-10 8-18 18-18h22z"
+          fill="url(#pacc)" opacity="0.5"/>
+  </g>
+  <path d="M60 400c24-24 48-24 72 0s48 24 72 0 48-24 76-6" fill="none" stroke="#00E5FF" stroke-width="7" stroke-linecap="round" opacity="0.55"/>
+  <text x="200" y="462" font-family="Inter, Helvetica, Arial, sans-serif" font-size="19" font-weight="600" fill="#8fb3d0" text-anchor="middle">Photo coming soon</text>
+</svg>
