@@ -29,7 +29,7 @@ collections:
     folder: "content/products"
     create: true
     delete: true
-   slug:
+    slug:
       template: "{{fields.name}}"
       encoding: "ascii"
       clean_accents: true
