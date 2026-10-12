@@ -1,0 +1,58 @@
+# =============================================================================
+# Netlify build configuration — SURF CREW Agadir
+# =============================================================================
+# There is no bundler and no framework. The only "build" step is a two-line
+# Node script that regenerates content/products/index.json from the wetsuit
+# Markdown files, so adding a suit in the admin panel updates the catalogue
+# automatically without anyone editing a list by hand.
+#
+# Node 18+ is a Netlify default, so no extra setup is required.
+# =============================================================================
+
+[build]
+  publish = "."
+  command = "node scripts/build-catalog.js"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# ---------------------------------------------------------------------------
+# Cache headers
+# ---------------------------------------------------------------------------
+
+# The catalogue data must always be fresh, otherwise a price change or a
+# "last one" update can be missed by visitors and by the service worker.
+[[headers]]
+  for = "/content/products/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# The service worker itself must never be cached, or clients get stuck on an
+# old version of the site.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+# Static assets carry a version query but keep this short to be safe.
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+
+# Uploaded product photos can be cached for a long time.
+[[headers]]
+  for = "/images/uploads/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

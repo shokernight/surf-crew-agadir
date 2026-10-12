@@ -1,0 +1,41 @@
+{
+  "name": "SURF CREW Agadir — Wetsuit Rentals",
+  "short_name": "SURF CREW",
+  "description": "Rent clean, sanitised wetsuits in Aourir and Tamraght, Agadir. Sizes S to XL from 480 MAD per day.",
+  "id": "/",
+  "start_url": "./index.html?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#061525",
+  "theme_color": "#061525",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["sports", "travel", "shopping"],
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Wetsuit catalogue",
+      "short_name": "Catalogue",
+      "url": "./index.html#catalog-section"
+    },
+    {
+      "name": "Rental info",
+      "short_name": "Info",
+      "url": "./index.html#info-section"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+# Netlify redirects
+# ---------------------------------------------------------------------------
+# IMPORTANT: there is deliberately NO catch-all /*  ->  /index.html rule here.
+# This site is a normal static site, so every file (css, js, images, product
+# photos) must be served from its real path. A catch-all would return the
+# index.html HTML for image requests and every product photo would break.
+# ---------------------------------------------------------------------------
+
+# Serve the Decap CMS admin panel at /admin without needing the .html suffix.
+/admin      /admin/index.html   200
+
+# Send the bare root to the catalogue.
+/           /index.html         200

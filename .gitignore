@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Never commit the Netlify CLI's local link state
+.netlify/
+
+# Scratch files used to zip the site for drag-and-drop deploys
+*.zip
+surf-crew-agadir/
+
+# Node (only used by scripts/build-catalog.js — no dependencies)
+node_modules/
+npm-debug.log*
+
+# Local server logs
+*.log
