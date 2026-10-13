@@ -87,10 +87,27 @@ async function fetchText(url) {
   return res.text();
 }
 
+/* A suit can carry more than one photo. Decap writes them as image, image2,
+   image3 ... while older files only have "image". Build one ordered, de-duped
+   list here so the rest of the app never has to care how many photos there are. */
+const PHOTO_FIELDS = ["image", "image2", "image3", "image4"];
+
+function productImages(merged) {
+  const list = [];
+  PHOTO_FIELDS.forEach((key) => {
+    const value = merged[key];
+    const src = typeof value === "string" ? value.trim() : "";
+    if (!src || src === "images/uploads/.gitkeep") return;
+    if (list.indexOf(src) === -1) list.push(src);
+  });
+  return list.length ? list : ["images/placeholder.svg"];
+}
+
 function toProduct(file, data, body, indexJson) {
   const slug = slugFromFile(file);
   const override = (indexJson.overrides && indexJson.overrides[slug]) || {};
   const merged = Object.assign({}, data, override);
+  const images = productImages(merged);
 
   return {
     slug,
@@ -102,7 +119,8 @@ function toProduct(file, data, body, indexJson) {
     price: Number(merged.price) || 0,
     stock: normalizeStock(merged.stock),
     featured: merged.featured === true || (indexJson.featured || []).indexOf(slug) !== -1,
-    image: merged.image || "images/uploads/.gitkeep",
+    images,
+    image: images[0],
     description: merged.description || "",
     body: body || ""
   };
@@ -144,9 +162,21 @@ const state = {
   products: [],
   filterSize: "ALL",
   query: "",
-  gallery: [],
-  galleryIndex: 0
+  gallery: [],      // flat list of { product, image, imageIndex, imageCount }
+  galleryIndex: 0   // position inside that flat list
 };
+
+/* Flatten the visible products into one entry PER PHOTO, so the lightbox can
+   step photo by photo and carry on into the next suit. */
+function buildGallery(products) {
+  const flat = [];
+  products.forEach((product) => {
+    product.images.forEach((image, imageIndex) => {
+      flat.push({ product, image, imageIndex, imageCount: product.images.length });
+    });
+  });
+  return flat;
+}
 
 /* --------------------------------------------------------------- render --- */
 
@@ -165,22 +195,25 @@ function showToast(message, ms = 2600) {
   toastTimer = setTimeout(() => toast.classList.remove("is-visible"), ms);
 }
 
-function cardMarkup(product) {
+function cardMarkup(product, galleryStart) {
   const isOut = product.stock === "out";
   const safeName = escapeHtml(product.name);
+  const cover = product.images[0];
+  const photoCount = product.images.length;
   const meta = [];
   if (product.thickness) meta.push(`<span><i class="fa-solid fa-layer-group" aria-hidden="true"></i>${escapeHtml(product.thickness)}</span>`);
   meta.push(`<span><i class="fa-solid fa-water" aria-hidden="true"></i>${escapeHtml(product.category)}</span>`);
 
   return `
-    <li class="product-card" data-slug="${escapeHtml(product.slug)}">
-      <button class="product-media" type="button" data-action="photo" aria-label="Enlarge photo of ${safeName}">
-        <img src="${encodeURI(product.image)}" alt="${safeName} wetsuit for sale — ${SHOP_NAME}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/placeholder.svg';this.classList.add('is-placeholder');">
+    <li class="product-card" data-slug="${escapeHtml(product.slug)}" data-gallery-start="${galleryStart}">
+      <button class="product-media${photoCount > 1 ? " has-multi" : ""}" type="button" data-action="photo" aria-label="Enlarge ${photoCount} photo${photoCount > 1 ? "s" : ""} of ${safeName}">
+        <img src="${encodeURI(cover)}" alt="${safeName} wetsuit for sale — ${SHOP_NAME}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/placeholder.svg';this.classList.add('is-placeholder');">
         <span class="media-badges">
           <span class="badge badge-size">${escapeHtml(product.size || "–")}</span>
           <span class="badge badge-stock stock-${product.stock}">${STOCK_LABEL[product.stock]}</span>
         </span>
         ${product.featured ? '<span class="badge badge-featured">Featured</span>' : ""}
+        ${photoCount > 1 ? `<span class="badge photo-count" aria-hidden="true"><i class="fa-solid fa-images" aria-hidden="true"></i>${photoCount}</span>` : ""}
       </button>
       <div class="card-body">
         <h3 class="card-title">${safeName}</h3>
@@ -215,7 +248,7 @@ function visibleProducts() {
 
 function render() {
   const list = visibleProducts();
-  state.gallery = list;
+  state.gallery = buildGallery(list);
 
   countLine.textContent = state.products.length
     ? `${list.length} of ${state.products.length} wetsuits`
@@ -229,7 +262,16 @@ function render() {
   }
 
   emptyState.hidden = true;
-  grid.innerHTML = list.map(cardMarkup).join("");
+
+  /* Each card remembers where its own first photo sits in the flat gallery. */
+  let cursor = 0;
+  grid.innerHTML = list
+    .map((product) => {
+      const start = cursor;
+      cursor += product.images.length;
+      return cardMarkup(product, start);
+    })
+    .join("");
 }
 
 /* ------------------------------------------------------------- lightbox --- */
@@ -237,14 +279,22 @@ function render() {
 const lightbox = $("#lightbox");
 const lbImage = $("#lightbox-image");
 const lbTitle = $("#lightbox-title");
+const lbCounter = $("#lightbox-counter");
+const lbDots = $("#lightbox-dots");
 const lbMeta = $("#lightbox-meta");
 const lbDesc = $("#lightbox-description");
 const lbActions = $("#lightbox-actions");
 let lastFocused = null;
 
 function openLightbox(index) {
-  const product = state.gallery[index];
-  if (!product) return;
+  const item = state.gallery[index];
+  if (!item) return;
+
+  const product = item.product;
+  const multiple = item.imageCount > 1;
+
+  /* One photo = no arrows at all. */
+  lightbox.classList.toggle("is-single", !multiple);
 
   state.galleryIndex = index;
   lastFocused = document.activeElement;
@@ -253,9 +303,22 @@ function openLightbox(index) {
     this.onerror = null;
     this.src = "images/placeholder.svg";
   };
-  lbImage.src = product.image;
-  lbImage.alt = `${product.name} — wetsuit for sale from ${SHOP_NAME}`;
+  lbImage.src = item.image;
+  lbImage.alt = `${product.name} — photo ${item.imageIndex + 1} of ${item.imageCount} — wetsuit for sale from ${SHOP_NAME}`;
   lbTitle.textContent = product.name;
+
+  /* "2 / 2" counter plus tappable dots, only for suits with several photos. */
+  if (lbCounter) lbCounter.textContent = multiple ? `${item.imageIndex + 1} / ${item.imageCount}` : "";
+  if (lbDots) {
+    lbDots.innerHTML = multiple
+      ? product.images
+          .map((_, i) => {
+            const current = i === item.imageIndex;
+            return `<button type="button" class="lb-dot${current ? " is-active" : ""}" data-dot="${i}" aria-label="Show photo ${i + 1} of ${item.imageCount}"${current ? ' aria-current="true"' : ""}></button>`;
+          })
+          .join("")
+      : "";
+  }
 
   lbMeta.innerHTML = [
     `<span>Size <b>${escapeHtml(product.size || "–")}</b></span>`,
@@ -283,9 +346,17 @@ function closeLightbox() {
 }
 
 function stepLightbox(delta) {
-  if (!state.gallery.length) return;
-  const next = (state.galleryIndex + delta + state.gallery.length) % state.gallery.length;
-  openLightbox(next);
+  const item = state.gallery[state.galleryIndex];
+  if (!item) return;
+
+  /* The arrows move ONLY between the photos of the suit you opened.
+     They never jump to another product. */
+  const count = item.imageCount;
+  if (count < 2) return;
+
+  const firstPhotoOfSuit = state.galleryIndex - item.imageIndex;
+  const nextPhoto = (item.imageIndex + delta + count) % count;
+  openLightbox(firstPhotoOfSuit + nextPhoto);
 }
 
 /* -------------------------------------------------------------- whatsapp -- */
@@ -323,14 +394,14 @@ function handleWhatsAppClick(event) {
 
 function bindEvents() {
   grid && grid.addEventListener("click", (event) => {
-    const card = event.target.closest(".product-card");
-    if (!card) return;
-    const slug = card.dataset.slug;
-    const index = state.gallery.findIndex((p) => p.slug === slug);
-    const action = event.target.closest("[data-action]");
+    const action = event.target.closest("[data-action='photo']");
     if (!action) return;
+    const card = action.closest(".product-card");
+    if (!card) return;
 
-    if (action.dataset.action === "photo") openLightbox(index);
+    /* open on the first photo of that suit */
+    const start = Number(card.dataset.galleryStart);
+    openLightbox(Number.isFinite(start) ? start : 0);
   });
 
   $$(".size-chips").forEach((group) => {
@@ -367,6 +438,16 @@ function bindEvents() {
   $("#lightbox-close")?.addEventListener("click", closeLightbox);
   $("#lb-prev")?.addEventListener("click", () => stepLightbox(-1));
   $("#lb-next")?.addEventListener("click", () => stepLightbox(1));
+
+  /* dots jump straight to one photo of the current suit */
+  lbDots?.addEventListener("click", (event) => {
+    const dot = event.target.closest("[data-dot]");
+    if (!dot) return;
+    const item = state.gallery[state.galleryIndex];
+    if (!item) return;
+    const firstPhotoOfSuits = state.galleryIndex - item.imageIndex;
+    openLightbox(firstPhotoOfSuits + Number(dot.dataset.dot));
+  });
   lightbox?.addEventListener("click", (e) => { if (e.target === lightbox) closeLightbox(); });
   lbActions?.addEventListener("click", handleWhatsAppClick);
 

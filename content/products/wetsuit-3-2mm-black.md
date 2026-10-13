@@ -7,6 +7,7 @@ price: 650
 stock: "available"
 featured: true
 image: "images/uploads/wetsuit-3-2mm-black.jpg"
+image2: "images/uploads/wetsuit-3-2mm-black-2.jpg"
 description: "New 3/2mm back-zip wetsuit in classic black. Flexible shoulder and knee panels make it an easy first suit, and it covers most of the year in Morocco."
 ---
 

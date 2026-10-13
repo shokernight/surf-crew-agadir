@@ -61,7 +61,12 @@
   ADDING A PRODUCT BY HAND (2 minutes)
       1. Copy any file in content/products/ and rename it, e.g. wetsuit-6-new.md
       2. Edit the lines between the two  ---  marks (name, size, price, stock, image)
-      3. Put your photo in images/uploads/ and point the "image:" line at it
+      3. Put your photo in images/uploads/ and point the "image:" line at it.
+         You can add a SECOND photo of the same suit: upload it too and add a
+         line   image2: "images/uploads/your-photo-2.jpg"   below "image:".
+         The card then shows a small "2" badge and the enlarged view lets the
+         customer step between the two photos with the arrows (left/right) or
+         by swiping. Leave image2 out and the suit simply has one photo.
       4. That is all. On the next deploy the build script regenerates
          content/products/index.json for you, so there is no list to update.
       5. Commit and push (or re-drag the folder onto https://app.netlify.com/drop)
@@ -302,13 +307,15 @@
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lightbox-title" aria-hidden="true">
     <div class="lightbox-top">
       <h3 id="lightbox-title">Wetsuit</h3>
+      <span class="lb-counter" id="lightbox-counter" aria-live="polite"></span>
       <button class="icon-btn" id="lightbox-close" type="button" aria-label="Close photo"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
     </div>
     <div class="lightbox-stage">
       <img id="lightbox-image" src="" alt="">
-      <button class="lb-nav lb-prev" id="lb-prev" type="button" aria-label="Previous wetsuit"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
-      <button class="lb-nav lb-next" id="lb-next" type="button" aria-label="Next wetsuit"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+      <button class="lb-nav lb-prev" id="lb-prev" type="button" aria-label="Previous photo"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+      <button class="lb-nav lb-next" id="lb-next" type="button" aria-label="Next photo"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
     </div>
+    <div class="lb-dots" id="lightbox-dots" role="group" aria-label="Photos of this wetsuit"></div>
     <div class="lightbox-bottom">
       <div class="lb-text">
         <p class="lb-meta" id="lightbox-meta"></p>

@@ -321,7 +321,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
   background: var(--accent);
   border-color: var(--accent);
   color: #04121f;
-  box-shadow: 0 6px 16px rgba(0, 229, 255, 0.28);
+  /* Deliberately NO outer box-shadow here. A blurred, offset shadow
+     (e.g. 0 6px 16px rgba(0,229,255,.28)) bleeds outside the pill and reads
+     as a fuzzy halo floating around the active chip. The solid accent fill
+     already marks the selection, so the highlight stops exactly at the
+     button's own edge. */
+  box-shadow: none;
 }
 
 .result-line {
@@ -454,6 +459,26 @@ button { font: inherit; color: inherit; cursor: pointer; }
   border: 1px solid var(--accent);
   color: var(--accent);
 }
+
+/* Photo counter shown on a card only when the suit has more than one photo. */
+.photo-count {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(6, 21, 37, 0.82);
+  border: 1px solid var(--line);
+  color: #dff2ff;
+  letter-spacing: 0.02em;
+}
+
+.photo-count i { font-size: 0.62rem; color: var(--accent); }
+
+/* A suit with two photos shows the photo-count badge instead of the magnifier,
+   so the two never sit on top of each other. */
+.product-media.has-multi::after { display: none; }
 
 .card-body {
   display: flex;
@@ -665,7 +690,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   backdrop-filter: blur(3px);
 }
 
-.lightbox.is-open { display: grid; grid-template-rows: auto 1fr auto; }
+.lightbox.is-open { display: grid; grid-template-rows: auto 1fr auto auto; }
 
 .lightbox-top {
   display: flex;
@@ -676,6 +701,45 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 
 .lightbox-top h3 { margin: 0; font-size: 0.95rem; flex: 1 1 auto; }
+
+.lb-counter {
+  flex: 0 0 auto;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.lb-counter:empty { display: none; }
+
+/* Small dots under the photo in the lightbox: one per photo of this suit. */
+.lb-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 14px 8px;
+}
+
+.lb-dots:empty { display: none; }
+
+.lb-dot {
+  width: 10px; height: 10px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  background: transparent;
+  opacity: 0.5;
+}
+
+.lb-dot.is-active { background: var(--accent); opacity: 1; }
+
+/* A suit with a single photo has nothing to step through, so hide the arrows
+   and the dots — there is no other photo of THAT suit to show. */
+.lightbox.is-single .lb-nav,
+.lightbox.is-single .lb-dots { display: none; }
 
 .lightbox-stage {
   display: grid;

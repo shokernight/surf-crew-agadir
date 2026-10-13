@@ -7,6 +7,7 @@ price: 480
 stock: "available"
 featured: false
 image: "images/uploads/wetsuit-2-2mm-summer.jpg"
+image2: "images/uploads/wetsuit-2-2mm-summer-2.jpg"
 description: "Lightly used 2/2mm spring suit for the hottest weeks of July and August, when the water hits 23 °C and a full 3/2mm feels like too much."
 ---
 

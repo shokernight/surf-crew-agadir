@@ -7,6 +7,7 @@ price: 850
 stock: "available"
 featured: true
 image: "images/uploads/wetsuit-4-3mm-winter.jpg"
+image2: "images/uploads/wetsuit-4-3mm-winter-2.jpg"
 description: "New 4/3mm steamer with glued and blind-stitched seams. The suit to own if you surf the Atlantic here from November through March."
 ---
 

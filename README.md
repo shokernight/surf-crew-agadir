@@ -32,6 +32,7 @@ Give a small Moroccan wetsuit seller a phone-first catalogue that:
 |---|---------|--------|
 | 1 | Reads products from `content/products/*.md` (YAML front-matter) | ✅ |
 | 2 | Full-screen photo lightbox with prev/next + swipe on mobile | ✅ |
+| 2b | **Two photos per product** (`image` + `image2`), with a `1 / 2` counter, dot switcher, and card badge | ✅ |
 | 3 | Instant size filtering (All / S / M / L / XL) — sticky bar | ✅ |
 | 4 | Live search across name, size, thickness, category, description | ✅ |
 | 5 | WhatsApp order button — one constant `WHATSAPP_NUMBER` in `js/app.js` | ✅ |
@@ -39,6 +40,7 @@ Give a small Moroccan wetsuit seller a phone-first catalogue that:
 | 7 | Dark surf theme (#061525 / #0e2a4d / #00E5FF), mobile-first | ✅ |
 | 8 | 2-column mobile / 4-column desktop product grid | ✅ |
 | 9 | Product cards: photo, name, size badge, thickness, price in MAD, stock badge, Buy button | ✅ |
+| 9b | Photo-count badge (gallery icon + number) on cards whose suit has more than one photo | ✅ |
 | 10 | Stock states: In stock / Last one / Sold out (disables the buy button) | ✅ |
 | 11 | Delivery-across-Morocco + meet-in-person messaging (no address/hours) | ✅ |
 | 12 | SEO: canonical, Open Graph, `SportingGoodsStore` JSON-LD, sitemap, robots | ✅ |
@@ -78,6 +80,20 @@ served over HTTP (Netlify, `npx serve`, VS Code Live Server, etc.).
   `name + thickness + category + size + description + body`.
 - Result line shows “*n* of *m* wetsuits”; empty state offers a reset button.
 
+### Photo gallery behaviour
+
+- Every suit has at least one photo (`image`) and may have a second (`image2`).
+- A card whose suit has two photos shows a small **gallery badge with “2”** at the
+  bottom-right of the picture instead of the magnifier icon. One-photo suits keep
+  the plain magnifier.
+- Tapping a card opens the lightbox **on that suit's first photo**.
+- The **left/right arrows and the mobile swipe stay inside the suit you opened** —
+  they cycle between its own photos (photo 1 ↔ photo 2) and never jump to another
+  product. A suit with only one photo shows no arrows and no dots at all.
+- The header pill shows the position, e.g. `1 / 2`, and the row of dots below the
+  photo lets you jump straight to a specific photo.
+- The arrow keys (←/→) do the same thing as the on-screen arrows.
+
 ## 4. Data models
 
 ### Product (Markdown front-matter + body)
@@ -91,13 +107,23 @@ thickness: "3/2mm Summer"      # string
 price: 650                     # number, MAD — the selling price, one-off
 stock: "available"             # available | last | out
 featured: true                 # boolean
-image: "images/uploads/wetsuit-3-2mm-black.jpg"
+image: "images/uploads/wetsuit-3-2mm-black.jpg"     # photo 1 (the card photo)
+image2: "images/uploads/wetsuit-3-2mm-black-2.jpg"  # photo 2 — optional
 description: "One or two sentences shown under the photo."
 ---
 
 Optional longer Markdown shown inside the enlarged photo view.
 Use it for condition (new / lightly used) and sizing notes.
 ```
+
+**Photos (up to 2 per product).** `image` is the main photo that appears on the card.
+`image2` is optional and adds a second photo of the same suit (a side view, a seam
+or label close-up). Leave `image2` empty and the suit simply has one photo — no
+badge, no arrows, nothing to break. The app reads the pair and exposes them as an
+ordered `images` array, so the lightbox can step between them. Add as many products
+as you like; only these six front-matter keys are special. Fields `image3`/
+`image4` are already understood by `js/app.js` if you ever want more than two
+photos by hand.
 
 `content/products/index.json` **(auto-generated — do not edit by hand)**:
 
@@ -143,6 +169,12 @@ price, an image, or has a size outside S/M/L/XL. To add a wetsuit, just add a
 Condition is stated in each product's description and body text; there is no
 separate condition field, so no CMS change is needed to record it.
 
+All six example suits ship with **two photos** each
+(`wetsuit-<slug>.jpg` and `wetsuit-<slug>-2.jpg`), so the `1 / 2` gallery,
+the dots, the arrows and the card badge are all visible out of the box. Replace
+them with real photos and keep the same two-per-product naming, or just upload a
+second photo in the admin panel.
+
 ## 6. File structure
 
 ```
@@ -153,7 +185,7 @@ css/style.css              full dark-surf theme, mobile-first
 js/app.js                  data loading, filtering, lightbox, WhatsApp glue
 content/products/*.md      6 example wetsuits
 content/products/index.json auto-generated catalogue manifest (see scripts/)
-images/uploads/            product photos (+ .gitkeep)
+images/uploads/            product photos — one or two per suit (`*.jpg`, `*-2.jpg`)
 images/favicon.svg         site icon
 images/placeholder.svg     shown if a product photo is missing or fails to load
 icons/icon.svg             app icon
@@ -235,6 +267,12 @@ Create the GitHub repository first, and create it **empty** (no README, no
 Test it: edit a price in the admin panel, save, and watch Netlify redeploy. The
 edit appears in `content/products/` as a commit on your GitHub repository.
 
+**Adding a second photo in the admin panel.** Open a wetsuit — the form has
+**Photo 1** (the card photo) and **Photo 2 (optional)**. Upload a second image into
+Photo 2 and save; Decap writes an `image2:` line into the Markdown file and the
+card gains the `2` gallery badge. Leave Photo 2 empty for a single-photo suit.
+The six example suits already have both photos filled in.
+
 **Step 4 — optional custom domain**
 
 **Domain management → Add a domain**, then either point your registrar's
@@ -270,7 +308,9 @@ set `publish = "site"` (remember to keep `admin/` and `content/` inside it).
   three-state badge edited by the owner.
 - No customer accounts, reviews or ratings.
 - Images are not auto-optimised at deploy time; keep uploads under ~300 KB
-  (or run them through a compressor before uploading).
+  (or run them through a compressor before uploading). Because a suit can now take
+  **two** photos, watch the page weight on the grid — cards only ever load the
+  first photo, so the second is fetched only when the lightbox opens.
 - `robots.txt`, `sitemap.xml` and the canonical/OG tags use the placeholder
   domain `surf-wetsuit.netlify.app` — replace it after choosing a real domain.
 - The drag-and-drop deploy cannot host the `/admin` editor (that needs Git
@@ -286,7 +326,8 @@ set `publish = "site"` (remember to keep `admin/` and `content/` inside it).
    set the real domain in `robots.txt`, `sitemap.xml`, `index.html`
    (canonical/OG) and the JSON-LD block.
 2. Replace the example photos in `images/uploads/` with real product photos (the
-   current ones are Creative-Commons surf photos used as placeholders).
+   current ones are Creative-Commons surf photos used as placeholders). Each suit
+   takes two: `wetsuit-<slug>.jpg` and `wetsuit-<slug>-2.jpg`.
 3. Review the prices: they are still 480–950 MAD, which were originally per-day
    rental rates. Set realistic one-off selling prices.
 4. Connect GitHub + Identity + Git Gateway and hand `/admin` to the owner.

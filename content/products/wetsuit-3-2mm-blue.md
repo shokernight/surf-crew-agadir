@@ -7,6 +7,7 @@ price: 620
 stock: "available"
 featured: false
 image: "images/uploads/wetsuit-3-2mm-blue.jpg"
+image2: "images/uploads/wetsuit-3-2mm-blue-2.jpg"
 description: "Lightly used 3/2mm suit in navy blue with a slim cut. Fully checked and cleaned — a good-value first suit for smaller surfers who want an easy paddle."
 ---
 

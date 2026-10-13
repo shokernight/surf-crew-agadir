@@ -50,7 +50,8 @@ collections:
           - { label: "Last one", value: "last" }
           - { label: "Sold out", value: "out" }
         hint: "Sold out keeps the card on the site but disables its Buy button."
-      - { name: "image", label: "Photo", widget: "image", hint: "Shoot the suit on a hanger in daylight. Keep photos under 300 KB." }
+      - { name: "image", label: "Photo 1", widget: "image", hint: "Main photo — the one shown on the shop card. Shoot the suit on a hanger in daylight. Keep photos under 300 KB." }
+      - { name: "image2", label: "Photo 2 (optional)", widget: "image", required: false, hint: "Second photo of the same suit — a side view, a detail of the seams, or the label. The card then shows a 2 badge and the enlarged view lets the customer swipe between both photos." }
       - { name: "description", label: "Short description", widget: "text", hint: "One or two sentences shown under the photo. Say whether the suit is new or used." }
       - { name: "featured", label: "Featured at the top of the shop", widget: "boolean", default: false, required: false }
       - { name: "body", label: "Full details (optional)", widget: "markdown", required: false, hint: "Shown in the enlarged photo view. Good place for condition and sizing notes." }

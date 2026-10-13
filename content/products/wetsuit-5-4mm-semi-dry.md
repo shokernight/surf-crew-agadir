@@ -7,6 +7,7 @@ price: 950
 stock: "last"
 featured: false
 image: "images/uploads/wetsuit-5-4mm-semi-dry.jpg"
+image2: "images/uploads/wetsuit-5-4mm-semi-dry-2.jpg"
 description: "New 5/4mm semi-dry with hood-compatible collar, sealed cuffs and liquid-taped seams. The warmest suit we sell — the one to own for cold-water trips and windy January dawns."
 ---
 
