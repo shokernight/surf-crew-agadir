@@ -7,10 +7,12 @@ price: 480
 stock: "available"
 featured: false
 image: "images/uploads/wetsuit-2-2mm-summer.jpg"
-description: "Ultra-light 2/2mm spring suit for the hottest weeks of July and August. Barely-there freedom of movement when the water hits 23 °C and you just want rash-free protection from the sun and the board."
+description: "Lightly used 2/2mm spring suit for the hottest weeks of July and August, when the water hits 23 °C and a full 3/2mm feels like too much."
 ---
 
-Our lightest and cheapest rental. Perfect for long summer sessions when a full
-3/2mm feels like too much, but you still want protection from sun, wax and rash.
+Our lightest and cheapest suit. Perfect for long summer sessions when you still
+want protection from sun, wax and rash without the bulk of a full steamer.
+Checked and cleaned before sale.
 
-**Recommended for:** summer only, water 22–25 °C.
+**Best for:** summer only, water 22–25 °C.
+**Condition:** lightly used, 8/10.

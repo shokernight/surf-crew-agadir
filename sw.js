@@ -1,127 +1,59 @@
-/* SURF CREW Agadir — service worker (offline catalogue + installable PWA) */
-const VERSION = "surfcrew-v1.1.0";
-const SHELL_CACHE = `${VERSION}-shell`;
-const DATA_CACHE = `${VERSION}-data`;
-const IMG_CACHE = `${VERSION}-img`;
+/* ==========================================================================
+   SURF WETSUIT — self-destructing service worker
+   ==========================================================================
+   WHY THIS FILE STILL EXISTS
 
-const SHELL_ASSETS = [
-  "./",
-  "index.html",
-  "css/style.css",
-  "js/app.js",
-  "manifest.json",
-  "images/favicon.svg",
-  "images/placeholder.svg",
-  "icons/icon.svg",
-  "content/products/index.json"
-];
+   The site used to be a Progressive Web App. Earlier versions of this file
+   registered a service worker that cached the site "app shell" — including
+   js/app.js — with a cache-first strategy.
 
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(SHELL_CACHE)
-      .then((cache) => Promise.allSettled(SHELL_ASSETS.map((a) => cache.add(a))))
-      .then(() => self.skipWaiting())
-  );
+   That causes a nasty problem: an installed service worker keeps running until
+   it is replaced or unregistered, and a cache-first worker will keep serving
+   the OLD js/app.js forever, even after the file is fixed on the server. That
+   is why a corrected WhatsApp number can still show the old placeholder.
+
+   Deleting this file is NOT enough: browsers keep a registered worker at the
+   same URL alive indefinitely. So this file stays, but it does the opposite of
+   before — on activation it unregisters itself and deletes every cache.
+
+   The page also runs the same cleanup inline (see index.html). Both together
+   mean existing visitors are freed from the old worker on their next visit.
+   ========================================================================== */
+
+self.addEventListener("install", () => {
+  /* Take over immediately so the cleanup below runs on the current visit. */
+  self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(
-        keys.filter((k) => !k.startsWith(VERSION)).map((k) => caches.delete(k))
-      ))
-      .then(() => self.clients.claim())
+    (async () => {
+      /* 1. Delete every cache the old worker created. */
+      try {
+        const keys = await caches.keys();
+        await Promise.all(keys.map((key) => caches.delete(key)));
+      } catch (err) {
+        /* non-fatal */
+      }
+
+      /* 2. Stop controlling open pages. */
+      try {
+        await self.clients.claim();
+      } catch (err) {
+        /* non-fatal */
+      }
+
+      /* 3. Unregister this worker for good. */
+      try {
+        await self.registration.unregister();
+      } catch (err) {
+        /* non-fatal */
+      }
+    })()
   );
 });
 
-self.addEventListener("message", (event) => {
-  if (event.data === "skip-waiting") self.skipWaiting();
-});
-
-function isImage(request, url) {
-  return request.destination === "image" || /\.(png|jpe?g|webp|gif|svg|avif)$/i.test(url.pathname);
-}
-
-function isCatalog(url) {
-  return url.pathname.includes("/content/products/") || url.pathname.endsWith("/content/products/index.json");
-}
-
-/* Markdown + index.json: network first, fall back to the saved copy (fresh prices online). */
-async function catalogStrategy(request) {
-  const cache = await caches.open(DATA_CACHE);
-  try {
-    const response = await fetch(request);
-    if (response && response.ok) cache.put(request, response.clone());
-    return response;
-  } catch (err) {
-    const cached = await cache.match(request, { ignoreSearch: true });
-    if (cached) return cached;
-    throw err;
-  }
-}
-
-/* HTML: network first, so a fresh deploy is picked up immediately, but the
-   last copy still opens the site when the visitor is offline. */
-async function htmlStrategy(request) {
-  const cache = await caches.open(SHELL_CACHE);
-  try {
-    const response = await fetch(request);
-    if (response && response.ok) cache.put(request, response.clone());
-    return response;
-  } catch (err) {
-    const cached = await cache.match(request, { ignoreSearch: true });
-    if (cached) return cached;
-    const shell = await cache.match("index.html");
-    if (shell) return shell;
-    throw err;
-  }
-}
-
-/* CSS / JS / manifest: cache first so the shell opens instantly and offline. */
-async function shellStrategy(request) {
-  const cached = await caches.match(request, { ignoreSearch: true });
-  if (cached) return cached;
-  const response = await fetch(request);
-  if (response && response.ok) {
-    const cache = await caches.open(SHELL_CACHE);
-    cache.put(request, response.clone());
-  }
-  return response;
-}
-
-/* Product photos: cache first, fill the cache in the background. */
-async function imageStrategy(request) {
-  const cache = await caches.open(IMG_CACHE);
-  const cached = await cache.match(request, { ignoreSearch: true });
-  if (cached) return cached;
-  const response = await fetch(request);
-  if (response && (response.ok || response.type === "opaque")) cache.put(request, response.clone());
-  return response;
-}
-
-self.addEventListener("fetch", (event) => {
-  const { request } = event;
-  if (request.method !== "GET") return;
-
-  const url = new URL(request.url);
-
-  /* Never interfere with the Decap admin panel or cross-origin CDNs. */
-  if (url.pathname.startsWith("/admin")) return;
-  if (url.origin !== self.location.origin) return;
-
-  if (isCatalog(url)) {
-    event.respondWith(catalogStrategy(request));
-    return;
-  }
-  if (isImage(request, url)) {
-    event.respondWith(imageStrategy(request));
-    return;
-  }
-  if (url.pathname === "/" || /\.(html|webmanifest)$/i.test(url.pathname) || request.mode === "navigate") {
-    event.respondWith(htmlStrategy(request));
-    return;
-  }
-  if (/\.(css|js|json)$/i.test(url.pathname)) {
-    event.respondWith(shellStrategy(request));
-  }
+/* Do not intercept any request. Fetch normally. */
+self.addEventListener("fetch", () => {
+  /* no respondWith(): requests go straight to the network */
 });

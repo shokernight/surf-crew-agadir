@@ -1,5 +1,5 @@
 # =============================================================================
-# SURF CREW Agadir — Decap CMS configuration
+# SURF WETSUIT — Decap CMS configuration
 # Backend: git-gateway (works with Netlify Identity, no server needed)
 #
 # Rules to keep this file loading:
@@ -12,12 +12,14 @@ backend:
   name: git-gateway
   branch: main
 
+# Where photos uploaded in the panel are stored, and the URL written into the
+# Markdown file. Netlify publishes the repo root, so the paths are identical.
 media_folder: "images/uploads"
 public_folder: "images/uploads"
 
 collections:
   - name: "products"
-    label: "Wetsuits for rent"
+    label: "Wetsuits for sale"
     label_singular: "Wetsuit"
     folder: "content/products"
     create: true
@@ -36,19 +38,19 @@ collections:
         widget: "select"
         default: "Wetsuit"
         options: ["Wetsuit"]
-        hint: "This shop rents wetsuits only."
+        hint: "We sell wetsuits only."
       - { name: "thickness", label: "Thickness", widget: "string", hint: "Example: 3/2mm Summer or 5/4mm Semi-Dry" }
-      - { name: "price", label: "Price (MAD per day)", widget: "number", value_type: "int", min: 0, step: 10 }
+      - { name: "price", label: "Price (MAD)", widget: "number", value_type: "int", min: 0, step: 10, hint: "The full selling price, not a rental price." }
       - name: "stock"
         label: "Stock"
         widget: "select"
         default: "available"
         options:
-          - { label: "Available", value: "available" }
+          - { label: "In stock", value: "available" }
           - { label: "Last one", value: "last" }
-          - { label: "Out of stock", value: "out" }
-        hint: "Out of stock keeps the card on the site but disables its WhatsApp button."
+          - { label: "Sold out", value: "out" }
+        hint: "Sold out keeps the card on the site but disables its Buy button."
       - { name: "image", label: "Photo", widget: "image", hint: "Shoot the suit on a hanger in daylight. Keep photos under 300 KB." }
-      - { name: "description", label: "Short description", widget: "text", hint: "One or two sentences shown under the photo." }
+      - { name: "description", label: "Short description", widget: "text", hint: "One or two sentences shown under the photo. Say whether the suit is new or used." }
       - { name: "featured", label: "Featured at the top of the shop", widget: "boolean", default: false, required: false }
-      - { name: "body", label: "Full details (optional)", widget: "markdown", required: false, hint: "Shown in the enlarged photo view." }
+      - { name: "body", label: "Full details (optional)", widget: "markdown", required: false, hint: "Shown in the enlarged photo view. Good place for condition and sizing notes." }

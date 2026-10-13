@@ -1,18 +1,17 @@
 /* ==========================================================================
-   SURF CREW Agadir — catalogue app
+   SURF WETSUIT — catalogue app
    Pure vanilla JS, no build step. Reads products from /content/products/*.md
    ========================================================================== */
 
 /* -------------------------------------------------------------- CONFIG ---- */
 
-/* >>> CHANGE THIS ONE LINE to your real WhatsApp number. <<<
-   International format, digits only, no +, no spaces, no leading zero.
-   Morocco example: 06 12 34 56 78  ->  "212612345678"            */
-const WHATSAPP_NUMBER = "2126XXXXXXX";
+/* WhatsApp number that every Buy button messages.
+   International format, digits only, no +, no spaces, no leading zero. */
+const WHATSAPP_NUMBER = "212611321357";
+const SHOP_NAME = "SURF WETSUIT";
 
 const CATALOG_INDEX = "content/products/index.json";
-const CACHE_KEY = "surfcrew_catalog_v1";
-const RENTAL_UNIT = "per day";
+const PRICE_UNIT = "each";
 
 /* ------------------------------------------------------------- helpers ---- */
 
@@ -71,9 +70,9 @@ function normalizeStock(value) {
 }
 
 const STOCK_LABEL = {
-  available: "Available",
+  available: "In stock",
   last: "Last one",
-  out: "Out of stock"
+  out: "Sold out"
 };
 
 function sizeOrder(size) {
@@ -121,7 +120,7 @@ async function loadCatalog() {
         const { data, body } = parseFrontMatter(raw);
         return toProduct(file, data, body, indexJson);
       } catch (err) {
-        console.warn("[SURF CREW] skipping", file, err);
+        console.warn("[SURF WETSUIT] skipping", file, err);
         return null;
       }
     })
@@ -139,25 +138,6 @@ async function loadCatalog() {
   return products;
 }
 
-function readCache() {
-  try {
-    const raw = localStorage.getItem(CACHE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    return parsed && Array.isArray(parsed.products) ? parsed : null;
-  } catch (err) {
-    return null;
-  }
-}
-
-function writeCache(products) {
-  try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), products }));
-  } catch (err) {
-    /* storage full / private mode — non fatal */
-  }
-}
-
 /* ---------------------------------------------------------------- state --- */
 
 const state = {
@@ -165,9 +145,7 @@ const state = {
   filterSize: "ALL",
   query: "",
   gallery: [],
-  galleryIndex: 0,
-  deferredInstall: null,
-  fromCache: false
+  galleryIndex: 0
 };
 
 /* --------------------------------------------------------------- render --- */
@@ -176,7 +154,6 @@ const grid = $("#product-grid");
 const emptyState = $("#empty-state");
 const countLine = $("#result-count");
 const countSummary = $("#result-summary");
-const offlineNote = $("#offline-note");
 const toast = $("#toast");
 
 let toastTimer = null;
@@ -198,7 +175,7 @@ function cardMarkup(product) {
   return `
     <li class="product-card" data-slug="${escapeHtml(product.slug)}">
       <button class="product-media" type="button" data-action="photo" aria-label="Enlarge photo of ${safeName}">
-        <img src="${encodeURI(product.image)}" alt="${safeName} wetsuit rental in Aourir, Tamraght" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/placeholder.svg';this.classList.add('is-placeholder');">
+        <img src="${encodeURI(product.image)}" alt="${safeName} wetsuit for sale — ${SHOP_NAME}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/placeholder.svg';this.classList.add('is-placeholder');">
         <span class="media-badges">
           <span class="badge badge-size">${escapeHtml(product.size || "–")}</span>
           <span class="badge badge-stock stock-${product.stock}">${STOCK_LABEL[product.stock]}</span>
@@ -210,12 +187,12 @@ function cardMarkup(product) {
         <p class="card-meta">${meta.join("")}</p>
         <div class="price-row">
           <span class="price">${product.price ? product.price + " MAD" : "Ask us"}</span>
-          <span class="price-unit">${RENTAL_UNIT}</span>
+          <span class="price-unit">${PRICE_UNIT}</span>
         </div>
         <div class="card-actions">
-          <button class="wa-btn" type="button" data-action="wa" ${isOut ? "disabled" : ""}>
-            <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>${isOut ? "Sold out" : "WhatsApp"}
-          </button>
+          ${isOut
+            ? `<button class="wa-btn" type="button" disabled><i class="fa-brands fa-whatsapp" aria-hidden="true"></i>Sold out</button>`
+            : `<a class="wa-btn" href="${escapeHtml(waHref(product))}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i>Buy now</a>`}
           <button class="details-btn" type="button" data-action="photo" aria-label="Details of ${safeName}">
             <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
           </button>
@@ -277,13 +254,13 @@ function openLightbox(index) {
     this.src = "images/placeholder.svg";
   };
   lbImage.src = product.image;
-  lbImage.alt = `${product.name} — wetsuit rental at SURF CREW Agadir`;
+  lbImage.alt = `${product.name} — wetsuit for sale from ${SHOP_NAME}`;
   lbTitle.textContent = product.name;
 
   lbMeta.innerHTML = [
     `<span>Size <b>${escapeHtml(product.size || "–")}</b></span>`,
     product.thickness ? `<span>Thickness <b>${escapeHtml(product.thickness)}</b></span>` : "",
-    `<span>Price <b>${product.price ? product.price + " MAD" : "on request"}</b> ${RENTAL_UNIT}</span>`,
+    `<span>Price <b>${product.price ? product.price + " MAD" : "on request"}</b> ${PRICE_UNIT}</span>`,
     `<span>Stock <b>${STOCK_LABEL[product.stock]}</b></span>`
   ].filter(Boolean).join("");
 
@@ -315,14 +292,14 @@ function stepLightbox(delta) {
 
 function waHref(product) {
   const lines = [
-    `Hi SURF CREW Agadir! I would like to rent this wetsuit:`,
+    `Hi ${SHOP_NAME}! I would like to buy this wetsuit:`,
     ``,
     `• ${product.name}`,
     `• Size: ${product.size || "?"}`,
     product.thickness ? `• Thickness: ${product.thickness}` : "",
-    product.price ? `• Price: ${product.price} MAD ${RENTAL_UNIT}` : "",
+    product.price ? `• Price: ${product.price} MAD` : "",
     ``,
-    `Pickup: Aourir / Tamraght. Is it available?`
+    `Deliver to (city in Morocco):`
   ].filter(Boolean);
 
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
@@ -330,7 +307,7 @@ function waHref(product) {
 
 function buildWaButton(product, scope) {
   const disabled = product.stock === "out" ? "disabled" : "";
-  const label = product.stock === "out" ? "Sold out" : "Order on WhatsApp";
+  const label = product.stock === "out" ? "Sold out" : "Buy on WhatsApp";
   return `<a class="btn btn-wa" data-wa-link="${scope}" href="${escapeHtml(waHref(product))}" target="_blank" rel="noopener" ${disabled}>
       <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>${label}
     </a>`;
@@ -354,10 +331,6 @@ function bindEvents() {
     if (!action) return;
 
     if (action.dataset.action === "photo") openLightbox(index);
-    if (action.dataset.action === "wa") {
-      handleWhatsAppClick(event);
-      event.stopPropagation();
-    }
   });
 
   $$(".size-chips").forEach((group) => {
@@ -423,72 +396,12 @@ function bindEvents() {
     render();
     showToast("Filters reset");
   });
-
-  window.addEventListener("online", () => {
-    offlineNote.classList.remove("is-visible");
-    showToast("Back online");
-  });
-  window.addEventListener("offline", () => {
-    offlineNote.classList.add("is-visible");
-  });
-}
-
-/* ------------------------------------------------------------------ PWA --- */
-
-function setupInstallPrompt() {
-  const bar = $("#install-bar");
-  if (!bar) return;
-
-  const isStandalone = window.matchMedia("(display-mode: standalone)").matches ||
-    window.navigator.standalone === true;
-  if (isStandalone || sessionStorage.getItem("surfcrew_install_dismissed") === "1") return;
-
-  const dismiss = () => {
-    bar.classList.remove("is-visible");
-    sessionStorage.setItem("surfcrew_install_dismissed", "1");
-  };
-
-  $("#install-dismiss")?.addEventListener("click", dismiss);
-
-  window.addEventListener("beforeinstallprompt", (event) => {
-    event.preventDefault();
-    state.deferredInstall = event;
-    bar.classList.add("is-visible");
-    $("#install-text").textContent = "Install SURF CREW for offline size checks.";
-  });
-
-  $("#install-go")?.addEventListener("click", async () => {
-    if (state.deferredInstall) {
-      state.deferredInstall.prompt();
-      await state.deferredInstall.userChoice;
-      state.deferredInstall = null;
-      dismiss();
-      return;
-    }
-    /* iOS Safari has no install prompt: explain the manual route */
-    showToast("iPhone: tap Share ⬆ then “Add to Home Screen”", 5000);
-  });
-
-  const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  if (isIos && !isStandalone) {
-    $("#install-text").textContent = "Add SURF CREW to your home screen.";
-    bar.classList.add("is-visible");
-  }
-}
-
-function registerServiceWorker() {
-  if (!("serviceWorker" in navigator)) return;
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js").catch((err) => {
-      console.warn("[SURF CREW] service worker not registered:", err);
-    });
-  });
 }
 
 /* ------------------------------------------------------------------ init -- */
 
 function showLoadError(err) {
-  console.error("[SURF CREW]", err);
+  console.error("[SURF WETSUIT]", err);
   grid.innerHTML = "";
   emptyState.hidden = false;
   emptyState.innerHTML = `
@@ -502,7 +415,7 @@ function showLoadError(err) {
 function syncStaticWaLinks() {
   $$("[data-wa-link]").forEach((el) => {
     const url = new URL(el.getAttribute("href"));
-    const text = url.searchParams.get("text") || "Hi SURF CREW Agadir, I would like to rent a wetsuit.";
+    const text = url.searchParams.get("text") || `Hi ${SHOP_NAME}, I would like to buy a wetsuit.`;
     el.setAttribute("href", `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`);
   });
   const year = $("#year");
@@ -512,27 +425,12 @@ function syncStaticWaLinks() {
 async function init() {
   bindEvents();
   syncStaticWaLinks();
-  registerServiceWorker();
-  setupInstallPrompt();
-
-  if (!navigator.onLine) offlineNote.classList.add("is-visible");
 
   try {
-    const products = await loadCatalog();
-    state.products = products;
-    state.fromCache = false;
-    writeCache(products);
+    state.products = await loadCatalog();
   } catch (err) {
-    const cached = readCache();
-    if (cached) {
-      state.products = cached.products;
-      state.fromCache = true;
-      offlineNote.classList.add("is-visible");
-      offlineNote.textContent = "Offline mode — showing the last saved catalogue.";
-    } else {
-      showLoadError(err);
-      return;
-    }
+    showLoadError(err);
+    return;
   }
 
   grid.setAttribute("aria-busy", "false");

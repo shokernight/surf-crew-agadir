@@ -7,10 +7,11 @@ price: 780
 stock: "available"
 featured: true
 image: "images/uploads/wetsuit-4-3mm-steamer.jpg"
-description: "All-season 4/3mm steamer that works from October to May. Chest-zip entry keeps the neck flexible and stops water flushing, so it stays comfortable through four hour sessions at Anchor Point."
+description: "New 4/3mm chest-zip steamer that covers October to May. Flexible neck entry stops water flushing, so it stays comfortable through four-hour sessions at Anchor Point."
 ---
 
-The most versatile suit we rent: warm enough for winter mornings, flexible
-enough for long summer evenings. Chest-zip entry, taped critical seams.
+The most versatile suit we sell: warm enough for winter mornings, flexible
+enough for long summer evenings. Chest-zip entry with taped critical seams.
 
-**Recommended for:** all levels, the all-year option, water 17–22 °C.
+**Best for:** all levels, the all-year option, water 17–22 °C.
+**Condition:** new, with tags.

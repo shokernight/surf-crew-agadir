@@ -7,11 +7,12 @@ price: 950
 stock: "last"
 featured: false
 image: "images/uploads/wetsuit-5-4mm-semi-dry.jpg"
-description: "Our warmest rental: 5/4mm semi-dry with hood-compatible collar, sealed cuffs and liquid-taped seams. The suit to take if you are heading north for cold-water sessions or surfing a windy January dawn."
+description: "New 5/4mm semi-dry with hood-compatible collar, sealed cuffs and liquid-taped seams. The warmest suit we sell — the one to own for cold-water trips and windy January dawns."
 ---
 
-The warmest suit in the shop. Semi-dry construction with sealed cuffs and a
-storm collar means far less cold-water flushing on bigger days.
+The warmest suit in the shop. Semi-dry construction, sealed cuffs and a storm
+collar mean far less cold-water flushing on bigger days.
 
-**Recommended for:** cold-water trips and winter dawn patrols, water 13–17 °C.
-**Note:** only one XL left in this model, reserve early on WhatsApp.
+**Best for:** cold-water trips and winter dawn patrols, water 13–17 °C.
+**Condition:** new, with tags.
+**Note:** only one XL left in this model.

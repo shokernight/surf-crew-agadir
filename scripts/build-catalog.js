@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* ==========================================================================
-   SURF CREW Agadir — catalogue index builder
+   SURF WETSUIT — catalogue index builder
    --------------------------------------------------------------------------
    Runs automatically on every Netlify deploy (see netlify.toml).
 

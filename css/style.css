@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SURF CREW Agadir — wetsuit rental catalogue
+   SURF WETSUIT — wetsuit shop catalogue
    Mobile-first dark surf theme. No frameworks, no build step.
    Palette: bg #061525 | card #0e2a4d | accent #00E5FF
    ========================================================================== */
@@ -510,6 +510,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   color: #04220f;
   font-weight: 800;
   font-size: 0.78rem;
+  text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -564,21 +565,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .empty-state h3 { margin: 0 0 6px; color: var(--text); font-size: 1rem; }
 .empty-state p { margin: 0 0 14px; font-size: 0.86rem; }
 
-.offline-note {
-  display: none;
-  margin: 0 0 12px;
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(245, 158, 11, 0.4);
-  background: rgba(245, 158, 11, 0.12);
-  color: #ffd894;
-  font-size: 0.8rem;
-}
-
-.offline-note.is-visible { display: block; }
-
 /* ---------------------------------------------------------------- info/FAQ */
-
 .info-section { padding: 26px 0 6px; }
 
 .info-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
@@ -604,20 +591,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .info-card p { margin: 0 0 10px; }
 .info-card ul { margin: 0; padding-left: 18px; }
 .info-card li + li { margin-top: 5px; }
-
-.hours-list { list-style: none; padding: 0; margin: 0; }
-
-.hours-list li {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 6px 0;
-  border-bottom: 1px dashed rgba(143, 179, 208, 0.22);
-  font-size: 0.85rem;
-}
-
-.hours-list li:last-child { border-bottom: 0; }
-.hours-list b { color: #fff; font-weight: 600; }
 
 .faq { padding: 26px 0 8px; }
 
@@ -756,42 +729,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* ------------------------------------------------------------ install / toast */
 
-.install-bar {
-  position: fixed;
-  left: 10px; right: 10px;
-  bottom: calc(10px + env(safe-area-inset-bottom));
-  z-index: 70;
-  display: none;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: rgba(14, 42, 77, 0.97);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
-  font-size: 0.82rem;
-}
-
-.install-bar.is-visible { display: flex; }
-.install-bar p { margin: 0; flex: 1 1 auto; }
-
-.install-bar button {
-  border: 0;
-  border-radius: 999px;
-  padding: 8px 14px;
-  background: var(--accent);
-  color: #04121f;
-  font-weight: 700;
-  font-size: 0.8rem;
-}
-
-.install-bar .dismiss {
-  background: transparent;
-  color: var(--muted);
-  padding: 8px 6px;
-  font-size: 1rem;
-}
-
 .toast {
   position: fixed;
   left: 50%;
@@ -846,5 +783,5 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 
 @media print {
-  .filter-bar, .site-header, .hero, .install-bar, .toast, .book-strip { display: none !important; }
+  .filter-bar, .site-header, .hero, .toast, .book-strip { display: none !important; }
 }

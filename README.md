@@ -1,23 +1,30 @@
-# SURF CREW Agadir — wetsuit rental catalogue
+# SURF WETSUIT — wetsuit shop catalogue
 
-A production-ready **static** e-commerce catalogue for a wetsuit rental shop in
-Aourir and Tamraght, Agadir. Pure HTML + CSS + vanilla JavaScript, no build step,
-no framework, no server. Deployable to Netlify free tier by drag-and-drop in
-about a minute.
+A production-ready **static** e-commerce catalogue for a wetsuit **shop** that
+sells wetsuits with **delivery across Morocco**. Pure HTML + CSS + vanilla
+JavaScript, no framework, no build step for the site itself, no server. Deploys
+to the Netlify free tier by drag-and-drop in about a minute.
 
-**Wetsuits only — no surfboards are listed or rented.**
+**Suits are sold, not rented.** Prices are one-off selling prices in MAD; there
+is no rental period anywhere on the site. Wetsuits only — no surfboards.
+
+**No physical shop.** There is no address and no opening hours. Wetsuits are
+delivered anywhere in Morocco, and buyers in **Tamraght** or **Taghazout** can
+meet in person to try the suit on before paying.
+
+**Contact:** WhatsApp `0611321357` (set as `212611321357` in `js/app.js`).
 
 ---
 
 ## 1. Project goals
 
-Give a small Moroccan surf rental shop a phone-first catalogue that:
+Give a small Moroccan wetsuit seller a phone-first catalogue that:
 
-- loads in under a second on a 3G beach connection,
+- loads in under a second on a 3G connection,
 - lets a customer find their size in two taps,
 - converts to a WhatsApp order with the suit, size and price pre-written,
 - can be updated by the owner from a phone, without a developer,
-- works offline and installs to the iPhone home screen.
+- needs no shop, no address and no opening hours to operate.
 
 ## 2. Currently completed features
 
@@ -28,16 +35,16 @@ Give a small Moroccan surf rental shop a phone-first catalogue that:
 | 3 | Instant size filtering (All / S / M / L / XL) — sticky bar | ✅ |
 | 4 | Live search across name, size, thickness, category, description | ✅ |
 | 5 | WhatsApp order button — one constant `WHATSAPP_NUMBER` in `js/app.js` | ✅ |
-| 6 | Decap CMS admin panel at `/admin` (git-gateway, Netlify Identity ready) | ✅ |
-| 7 | Progressive Web App — offline service worker + installable | ✅ |
-| 8 | Dark surf theme (#061525 / #0e2a4d / #00E5FF), mobile-first | ✅ |
-| 9 | 2-column mobile / 4-column desktop product grid | ✅ |
-| 10 | Product cards: photo, name, size badge, thickness, price in MAD, stock badge, WhatsApp | ✅ |
-| 11 | Stock states: Available / Last one / Out of stock (disables ordering) | ✅ |
-| 12 | Offline fallback: shows last cached catalogue and banners the visitor | ✅ |
-| 13 | SEO: canonical, Open Graph, `SportingGoodsStore` JSON-LD, sitemap, robots | ✅ |
-| 14 | Rental info + opening hours + FAQ sections | ✅ |
-| 15 | 60-second deployment instructions in an HTML comment at the top of `index.html` | ✅ |
+| 6 | Decap CMS admin panel at `/admin` (git-gateway, Netlify Identity) | ✅ |
+| 7 | Dark surf theme (#061525 / #0e2a4d / #00E5FF), mobile-first | ✅ |
+| 8 | 2-column mobile / 4-column desktop product grid | ✅ |
+| 9 | Product cards: photo, name, size badge, thickness, price in MAD, stock badge, Buy button | ✅ |
+| 10 | Stock states: In stock / Last one / Sold out (disables the buy button) | ✅ |
+| 11 | Delivery-across-Morocco + meet-in-person messaging (no address/hours) | ✅ |
+| 12 | SEO: canonical, Open Graph, `SportingGoodsStore` JSON-LD, sitemap, robots | ✅ |
+| 13 | Buying & delivery info + FAQ sections | ✅ |
+| 14 | Deployment instructions in an HTML comment at the top of `index.html` | ✅ |
+| 15 | New vs used condition stated per listing (in each product description) | ✅ |
 
 ### Design tokens
 
@@ -54,12 +61,10 @@ Breakpoints: mobile-first base, `620px` (2-col info, inline filter bar), `900px`
 
 | Path | Purpose | Parameters |
 |------|---------|-----------|
-| `/index.html` | Catalogue, filters, search, lightbox, info, FAQ | `#catalog-section`, `#info-section`, `#faq-section` (anchors) |
-| `/admin/` | Decap CMS content manager (login required) | — |
+| `/index.html` | Catalogue, filters, search, lightbox, buying info, FAQ | `#catalog-section`, `#info-section`, `#faq-section` (anchors) |
+| `/admin/` | Decap CMS content manager (login required; not linked in the site footer) | — |
 | `/content/products/index.json` | Auto-generated manifest of which `.md` files to load + `featured` list (rewritten by `scripts/build-catalog.js`) | — |
 | `/content/products/<slug>.md` | One wetsuit product | front-matter fields below |
-| `/manifest.json` | PWA manifest | — |
-| `/sw.js` | Service worker (shell + catalogue + image caches) | — |
 | `/_redirects` | `/admin` → `/admin/index.html`, `/` → `/index.html`. No catch-all rule, so real files keep their real paths | — |
 
 The catalogue is a single static page that loads its own data over `fetch`, so
@@ -83,7 +88,7 @@ name: "Wetsuit 3/2mm Black"   # string
 size: "M"                      # S | M | L | XL
 category: "Wetsuit"            # fixed
 thickness: "3/2mm Summer"      # string
-price: 650                     # number, MAD per day
+price: 650                     # number, MAD — the selling price, one-off
 stock: "available"             # available | last | out
 featured: true                 # boolean
 image: "images/uploads/wetsuit-3-2mm-black.jpg"
@@ -91,6 +96,7 @@ description: "One or two sentences shown under the photo."
 ---
 
 Optional longer Markdown shown inside the enlarged photo view.
+Use it for condition (new / lightly used) and sizing notes.
 ```
 
 `content/products/index.json` **(auto-generated — do not edit by hand)**:
@@ -116,20 +122,26 @@ price, an image, or has a size outside S/M/L/XL. To add a wetsuit, just add a
 - **Netlify CDN** — serves the static files.
 - **Git repository** — the product database (one `.md` file per wetsuit).
 - **Netlify Identity + Git Gateway** — login for `/admin`, writes commits.
-- **`localStorage`** — `surfcrew_catalog_v1` caches the catalogue for offline mode.
-- **Cache Storage API** — three caches: `-shell`, `-data`, `-img`.
-- No database, no server-side code, no API keys.
+- No database, no server-side code, no API keys, no cookies, no client storage.
 
-## 5. Example catalogue (6 wetsuits)
+> Note: the earlier Progressive Web App layer (service worker, web app manifest
+> and offline cache) was **removed on request**. The site is online-only: it
+> always fetches live prices and stock, and shows an error message if the
+> catalogue cannot be reached.
 
-| Name | Size | Thickness | Price (MAD/day) | Stock |
-|------|------|-----------|-----------------|-------|
-| Wetsuit 3/2mm Black | M | 3/2mm Summer | 650 | available, featured |
-| Wetsuit 4/3mm Winter | L | 4/3mm Winter | 850 | available, featured |
-| Wetsuit 3/2mm Blue | S | 3/2mm Summer | 620 | available |
-| Wetsuit 5/4mm Semi-Dry | XL | 5/4mm Semi-Dry | 950 | last one |
-| Wetsuit 2/2mm Summer | M | 2/2mm Summer | 480 | available |
-| Wetsuit 4/3mm Steamer | L | 4/3mm Steamer | 780 | available, featured |
+## 5. Example catalogue (6 wetsuits for sale)
+
+| Name | Size | Thickness | Price (MAD) | Condition | Stock |
+|------|------|-----------|-------------|-----------|-------|
+| Wetsuit 3/2mm Black | M | 3/2mm Summer | 650 | new | in stock, featured |
+| Wetsuit 4/3mm Winter | L | 4/3mm Winter | 850 | new | in stock, featured |
+| Wetsuit 3/2mm Blue | S | 3/2mm Summer | 620 | lightly used | in stock |
+| Wetsuit 5/4mm Semi-Dry | XL | 5/4mm Semi-Dry | 950 | new | last one |
+| Wetsuit 2/2mm Summer | M | 2/2mm Summer | 480 | lightly used | in stock |
+| Wetsuit 4/3mm Steamer | L | 4/3mm Steamer | 780 | new | in stock, featured |
+
+Condition is stated in each product's description and body text; there is no
+separate condition field, so no CMS change is needed to record it.
 
 ## 6. File structure
 
@@ -138,9 +150,7 @@ index.html                 catalogue (deployment instructions in a comment at th
 admin/index.html           Decap CMS entry point
 admin/config.yml           CMS backend, media folder and product fields
 css/style.css              full dark-surf theme, mobile-first
-js/app.js                  data loading, filtering, lightbox, WhatsApp, PWA glue
-sw.js                      service worker (offline + caching)
-manifest.json              PWA manifest
+js/app.js                  data loading, filtering, lightbox, WhatsApp glue
 content/products/*.md      6 example wetsuits
 content/products/index.json auto-generated catalogue manifest (see scripts/)
 images/uploads/            product photos (+ .gitkeep)
@@ -193,9 +203,9 @@ reads to know which products exist.
 cd path/to/this/project
 git init
 git add .
-git commit -m "SURF CREW Agadir wetsuit catalogue"
+git commit -m "SURF WETSUIT shop"
 git branch -M main
-git remote add origin https://github.com/YOUR-USERNAME/surf-crew-agadir.git
+git remote add origin https://github.com/YOUR-USERNAME/surf-wetsuit.git
 git push -u origin main
 ```
 
@@ -207,7 +217,7 @@ Create the GitHub repository first, and create it **empty** (no README, no
 **Step 2 — connect Netlify to that repository**
 
 1. <https://app.netlify.com> → **Add new site** → **Import an existing project**.
-2. **GitHub** → authorise → pick `surf-crew-agadir`.
+2. **GitHub** → authorise → pick `surf-wetsuit`.
 3. Netlify reads `netlify.toml`; leave the detected settings alone → **Deploy**.
 4. After the first deploy, check the log line
    `[catalog] wrote content/products/index.json with 6 product(s)`. The site is
@@ -249,42 +259,48 @@ set `publish = "site"` (remember to keep `admin/` and `content/` inside it).
 | New wetsuit does not appear | the build did not run | check deploy log for `[catalog] wrote …` |
 | Everything 404s / photos break | a catch-all `/*  /index.html  200` redirect was added | remove it; this is a multi-file static site, not an SPA |
 | Login email never arrives | Identity is disabled or the address was not invited | re-invite under **Identity → Invite users** |
-
+| Error loading the CMS configuration | invalid YAML in `admin/config.yml` | indent with spaces, never Tab; keep every key in a collection in the same column; `slug` must be a plain string |
 
 ## 8. Not yet implemented / known limitations
 
-- No basket, checkout, payments or online deposits — orders go to WhatsApp by
-  design (no server, no PCI scope, no card fees).
-- No availability calendar or date-range booking; stock is a simple three-state
-  badge edited by the owner.
+- No basket, checkout or card payments — orders go to WhatsApp by design (no
+  server, no PCI scope, no card fees, no shipping calculator).
+- No shipping cost calculator; delivery time and cost are agreed on WhatsApp.
+- No size chart, returns flow or stock quantity per suit; stock is a simple
+  three-state badge edited by the owner.
 - No customer accounts, reviews or ratings.
 - Images are not auto-optimised at deploy time; keep uploads under ~300 KB
   (or run them through a compressor before uploading).
-- `robots.txt` and `sitemap.xml` contain the placeholder domain
-  `surfcrewagadir.com` — replace it after choosing a domain.
+- `robots.txt`, `sitemap.xml` and the canonical/OG tags use the placeholder
+  domain `surf-wetsuit.netlify.app` — replace it after choosing a real domain.
 - The drag-and-drop deploy cannot host the `/admin` editor (that needs Git
   Gateway); the catalogue itself works either way. See section 7 for the Git route.
 - The build step only rewrites `content/products/index.json`. There is no
   minification, image optimisation or bundling.
+- No offline mode and no installable app: this was intentionally removed. The
+  site requires a connection to load products.
 
 ## 9. Recommended next steps
 
-1. Set the real WhatsApp number (`js/app.js`) and the real domain in `robots.txt`,
-   `sitemap.xml`, `index.html` (canonical/OG) and the JSON-LD block.
-2. Replace the example photos in `images/uploads/` with real shop photos (the
+1. Confirm the WhatsApp number in `js/app.js` is `212611321357` (already set) and
+   set the real domain in `robots.txt`, `sitemap.xml`, `index.html`
+   (canonical/OG) and the JSON-LD block.
+2. Replace the example photos in `images/uploads/` with real product photos (the
    current ones are Creative-Commons surf photos used as placeholders).
-3. Connect GitHub + Identity + Git Gateway and hand `/admin` to the owner.
-4. Add a `wetsuits.json` availability feed later if a booking calendar is needed.
-5. Optional: add a French version (`/fr/`) — most Aourir and Tamraght visitors
+3. Review the prices: they are still 480–950 MAD, which were originally per-day
+   rental rates. Set realistic one-off selling prices.
+4. Connect GitHub + Identity + Git Gateway and hand `/admin` to the owner.
+5. Add a size chart and a shipping/returns page as the shop grows.
+6. Optional: add a French version (`/fr/`) — most Moroccan surf-zone visitors
    arrive from French-speaking markets.
-6. Register the site with Google Search Console and submit `sitemap.xml`.
+7. Register the site with Google Search Console and submit `sitemap.xml`.
 
 ## 10. Public URLs
 
 | Environment | URL |
 |-------------|-----|
-| Production (custom domain, to be pointed) | `https://surfcrewagadir.com/` |
 | Netlify default after Git import | `https://<your-site-name>.netlify.app/` |
+| Custom domain (once pointed) | `https://your-domain.com/` |
 | Admin panel | `https://<your-site>/admin/` |
 | Catalogue data | `/content/products/index.json` and `/content/products/*.md` |
-| PWA manifest / worker | `/manifest.json`, `/sw.js` |
+| WhatsApp orders | `https://wa.me/212611321357` |

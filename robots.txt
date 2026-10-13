@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 
-Sitemap: https://surfcrewagadir.com/sitemap.xml
+Sitemap: https://surf-wetsuit.netlify.app/sitemap.xml

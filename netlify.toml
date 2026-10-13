@@ -1,5 +1,5 @@
 # =============================================================================
-# Netlify build configuration — SURF CREW Agadir
+# Netlify build configuration — SURF WETSUIT
 # =============================================================================
 # There is no bundler and no framework. The only "build" step is a two-line
 # Node script that regenerates content/products/index.json from the wetsuit
@@ -21,18 +21,11 @@
 # ---------------------------------------------------------------------------
 
 # The catalogue data must always be fresh, otherwise a price change or a
-# "last one" update can be missed by visitors and by the service worker.
+# "last one" update can be missed by visitors.
 [[headers]]
   for = "/content/products/*"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
-
-# The service worker itself must never be cached, or clients get stuck on an
-# old version of the site.
-[[headers]]
-  for = "/sw.js"
-  [headers.values]
-    Cache-Control = "no-cache, no-store, must-revalidate"
 
 # Static assets carry a version query but keep this short to be safe.
 [[headers]]

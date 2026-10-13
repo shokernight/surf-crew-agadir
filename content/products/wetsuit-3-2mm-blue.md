@@ -7,10 +7,12 @@ price: 620
 stock: "available"
 featured: false
 image: "images/uploads/wetsuit-3-2mm-blue.jpg"
-description: "Lightweight 3/2mm suit in navy blue with a slim, female-friendly cut. Great for smaller surfers who want an easy paddle and quick drying between two sessions in one day."
+description: "Lightly used 3/2mm suit in navy blue with a slim cut. Fully checked and cleaned — a good-value first suit for smaller surfers who want an easy paddle."
 ---
 
-Light, stretchy and fast-drying. Ideal if you are surfing twice a day and want a
-suit that is comfortable again within an hour of hanging it in the sun.
+Lightly used (one season) 3/2mm in navy blue. Stretchy and fast-drying, with a
+slimmer cut that suits smaller frames. Inspected for seam and zip wear before
+sale.
 
-**Recommended for:** smaller surfers and beginners, water 19–24 °C.
+**Best for:** smaller surfers and beginners, water 19–24 °C.
+**Condition:** lightly used, 8/10.

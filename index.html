@@ -1,31 +1,30 @@
 <!DOCTYPE html>
 <!--
 =================================================================================
-  SURF CREW AGADIR - WETSUIT RENTALS  |  static catalogue, no build step
+  SURF WETSUIT - WETSUIT SHOP  |  static catalogue, no build step
 =================================================================================
 
   HOW TO PUT THIS WEBSITE ONLINE FOR FREE ON NETLIFY (UNDER 2 MINUTES)
   -----------------------------------------------------------------------------
-  STEP 0 - Change your WhatsApp number (30 seconds, do this first)
-      Open the file  js/app.js  in any text editor.
-      Find the line near the top that says:
-            const WHATSAPP_NUMBER = "2126XXXXXXX";
-      Replace it with YOUR number in international format, digits only,
-      no plus sign, no spaces, no leading zero.
-      Example: local 06 12 34 56 78  becomes   const WHATSAPP_NUMBER = "212612345678";
-      Save the file. Every green WhatsApp button on the site now messages you.
+  STEP 0 - Your WhatsApp number
+      The number is already set to 212611321357 (0611321357 in Morocco).
+      To change it, open  js/app.js  and edit the line near the top:
+            const WHATSAPP_NUMBER = "212611321357";
+      International format, digits only, no plus sign, no leading zero.
+      Example: local 06 11 32 13 57  becomes   const WHATSAPP_NUMBER = "212611321357";
+      Save the file. Every green Buy button on the site messages you.
 
   STEP 1 - Drag and drop onto Netlify (about 60 seconds, no account fee)
       a) Zip this whole folder (index.html, css/, js/, content/, images/, admin/,
-         manifest.json, sw.js, _redirects, robots.txt, sitemap.xml).
+         robots.txt, sitemap.xml).
          On Mac: right-click the folder > Compress. On Windows: right-click > Send to > Compressed folder.
       b) Go to https://app.netlify.com/drop
       c) Drag the ZIP file onto the page. Netlify uploads it and gives you a live
-         link like https://surf-crew-agadir.netlify.app  within seconds.
+         link like https://surf-wetsuit.netlify.app  within seconds.
          The site is now LIVE and real customers can open it on their phones.
       d) Optional: "Claim your site" to keep it forever on your free account.
 
-  STEP 2 - Optional custom domain such as surfcrewagadir.com
+  STEP 2 - Optional custom domain such as surfwetsuit.com
       a) In Netlify open: Site configuration > Domain management > Add a domain.
       b) Type your domain, then follow the DNS instructions shown
          (either change nameservers to Netlify, or add the CNAME/A record at your registrar).
@@ -37,26 +36,24 @@
       The admin panel writes to your GitHub repository, so it needs the site to be
       deployed FROM Git rather than dragged in by hand.
       a) Create a free GitHub account, then create a new EMPTY repository
-         called e.g. surf-crew-agadir (do not add a README).
+         called e.g. surf-wetsuit (do not add a README).
       b) Open a terminal in this folder and run, replacing the URL with yours:
             git init
             git add .
-            git commit -m "SURF CREW Agadir wetsuit catalogue"
+            git commit -m "SURF WETSUIT shop"
             git branch -M main
-            git remote add origin https://github.com/YOUR-USERNAME/surf-crew-agadir.git
+            git remote add origin https://github.com/YOUR-USERNAME/surf-wetsuit.git
             git push -u origin main
       c) In Netlify: Add new site > Import an existing project > GitHub > pick
          the repository. Netlify reads netlify.toml automatically, so the build
          command and publish directory are already correct. Click Deploy.
       d) Site configuration > Identity > Enable Identity.
       e) Identity > Services > Git Gateway > Enable Git Gateway.
-         (This is what lets the admin panel save to GitHub on your behalf.
-          You do NOT need to create a GitHub token or paste any API key.)
       f) Identity > Invite users > invite your own email, open the invitation
          email, and set a password.
       g) Open  https://YOUR-SITE.netlify.app/admin  and log in. You can now add a
-         wetsuit, upload a photo, change a price and mark stock as available,
-         last one or out of stock. Saving commits a Markdown file to
+         suit, upload a photo, change a price and mark stock as in stock,
+         last one or sold out. Saving commits a Markdown file to
          content/products/ and Netlify rebuilds the site automatically.
       Note: the drag-and-drop site from STEP 1 shows the catalogue immediately;
       only the /admin editing panel needs the GitHub + Identity steps above.
@@ -69,8 +66,9 @@
          content/products/index.json for you, so there is no list to update.
       5. Commit and push (or re-drag the folder onto https://app.netlify.com/drop)
       Valid sizes are S, M, L and XL. Valid stock values are available, last, out.
+      A product is a suit FOR SALE. There is no rental price or rental period.
 
-  QUESTIONS ON A RENTAL?  Every WhatsApp button opens a chat with the wetsuit
+  ANY QUESTION ABOUT A SUIT?  Every WhatsApp button opens a chat with the wetsuit
   name, size and price already written for the customer.
 =================================================================================
 -->
@@ -78,26 +76,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>SURF CREW Agadir — Wetsuit Rentals in Aourir &amp; Tamraght</title>
-  <meta name="description" content="Rent clean, sanitised wetsuits in Aourir and Tamraght, Agadir. Sizes S to XL, summer 2/2mm to winter 5/4mm semi-dry. From 480 MAD per day. Order on WhatsApp.">
+  <title>SURF WETSUIT — Wetsuits for Sale, Delivery Across Morocco</title>
+  <meta name="description" content="Buy new and lightly used wetsuits with delivery across Morocco. Sizes S to XL, summer 2/2mm to winter 5/4mm semi-dry. From 480 MAD. Meet in person in Tamraght or Taghazout. Order on WhatsApp 0611321357.">
   <meta name="theme-color" content="#061525">
-  <meta name="author" content="SURF CREW Agadir">
-  <link rel="canonical" href="https://surfcrewagadir.com/">
+  <meta name="author" content="SURF WETSUIT">
+  <link rel="canonical" href="https://surf-wetsuit.netlify.app/">
 
   <!-- Open Graph / social sharing -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="SURF CREW Agadir — Wetsuit Rentals">
-  <meta property="og:description" content="Wetsuit rentals in Aourir and Tamraght. Sizes S to XL, from 480 MAD per day. Order on WhatsApp.">
+  <meta property="og:title" content="SURF WETSUIT — Wetsuits for Sale">
+  <meta property="og:description" content="New and lightly used wetsuits, delivered across Morocco. Sizes S to XL, from 480 MAD. Meet in person in Tamraght or Taghazout.">
   <meta property="og:image" content="images/uploads/hero-tamraght-surf.jpg">
   <meta name="twitter:card" content="summary_large_image">
 
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json">
+  <!-- Icons -->
   <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon.svg">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="SURF CREW">
+  <meta name="apple-mobile-web-app-title" content="SURF WETSUIT">
 
   <!-- Fonts + icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -106,23 +101,18 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
 
-  <!-- Local business structured data (helps Google show your rental shop) -->
+  <!-- Shop structured data (helps Google show your listings) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "SportingGoodsStore",
-    "name": "SURF CREW Agadir",
-    "description": "Wetsuit rentals in Aourir and Tamraght, Agadir, Morocco. Sizes S to XL from 480 MAD per day.",
+    "name": "SURF WETSUIT",
+    "description": "Wetsuits for sale with delivery across Morocco. Sizes S to XL from 480 MAD. Wetsuits only, no surfboards.",
     "image": "images/uploads/hero-tamraght-surf.jpg",
     "priceRange": "480-950 MAD",
-    "areaServed": ["Aourir", "Tamraght", "Taghazout", "Agadir"],
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Aourir",
-      "addressRegion": "Agadir",
-      "addressCountry": "MA"
-    },
-    "openingHours": "Mo-Su 08:00-20:00"
+    "telephone": "+212611321357",
+    "areaServed": "Morocco",
+    "availableDeliveryMethod": "https://schema.org/ParcelService"
   }
   </script>
 </head>
@@ -134,12 +124,12 @@
       <div class="brand">
         <span class="brand-mark" aria-hidden="true"><i class="fa-solid fa-water"></i></span>
         <span class="brand-text">
-          <span class="brand-name">SURF CREW</span>
-          <span class="brand-sub">Wetsuits • Aourir • Tamraght</span>
+          <span class="brand-name">SURF WETSUIT</span>
+          <span class="brand-sub">Wetsuits • Delivery in Morocco</span>
         </span>
       </div>
       <div class="header-actions">
-        <a class="icon-btn" href="#info-section" aria-label="Rental info and opening hours">
+        <a class="icon-btn" href="#info-section" aria-label="Buying and delivery info">
           <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
         </a>
         <a class="icon-btn" href="#catalog-section" aria-label="Browse wetsuits">
@@ -152,17 +142,17 @@
   <main>
     <section class="hero" id="hero-section">
       <div class="wrap">
-        <h2>Clean wetsuits, rented by the day in Aourir &amp; Tamraght.</h2>
-        <p>Fresh-water rinsed and sanitised after every session. Sizes S to XL, from thin 2/2mm summer suits to a 5/4mm semi-dry for cold Atlantic dawns.</p>
+        <h2>Wetsuits for sale, delivered across Morocco.</h2>
+        <p>New and lightly used suits. Sizes S to XL, from thin 2/2mm summer suits to a 5/4mm semi-dry for cold Atlantic dawns. If you are in Tamraght or Taghazout we can meet in person so you can try the suit on.</p>
         <ul class="hero-points">
-          <li><i class="fa-solid fa-check" aria-hidden="true"></i> Sanitised daily</li>
+          <li><i class="fa-solid fa-check" aria-hidden="true"></i> Delivery across Morocco</li>
+          <li><i class="fa-solid fa-check" aria-hidden="true"></i> Meet in Tamraght &amp; Taghazout</li>
           <li><i class="fa-solid fa-check" aria-hidden="true"></i> S to XL in stock</li>
-          <li><i class="fa-solid fa-check" aria-hidden="true"></i> Free size swap</li>
-          <li><i class="fa-solid fa-check" aria-hidden="true"></i> Board NOT included</li>
+          <li><i class="fa-solid fa-check" aria-hidden="true"></i> Wetsuits only, no boards</li>
         </ul>
         <div class="hero-cta">
-          <a class="btn btn-accent" href="#catalog-section"><i class="fa-solid fa-suitcase-rolling" aria-hidden="true"></i>See sizes &amp; prices</a>
-          <a class="btn btn-ghost" data-wa-link="hero" href="https://wa.me/2126XXXXXXX?text=Hi%20SURF%20CREW%20Agadir%2C%20I%20would%20like%20to%20rent%20a%20wetsuit." target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i>Ask a question</a>
+          <a class="btn btn-accent" href="#catalog-section"><i class="fa-solid fa-tags" aria-hidden="true"></i>See suits &amp; prices</a>
+          <a class="btn btn-ghost" data-wa-link="hero" href="https://wa.me/212611321357?text=Hi%20SURF%20WETSUIT%2C%20I%20would%20like%20to%20buy%20a%20wetsuit." target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i>Ask a question</a>
         </div>
       </div>
     </section>
@@ -186,18 +176,16 @@
 
         <p class="result-line">
           <strong id="result-count">Loading…</strong>
-          <span>Prices in MAD, per day</span>
+          <span>Prices in MAD, each</span>
         </p>
       </div>
     </section>
 
     <section class="catalog wrap" id="catalog-section" aria-labelledby="catalog-title">
       <div class="section-head">
-        <h2 id="catalog-title">Wetsuit catalogue</h2>
+        <h2 id="catalog-title">Wetsuits for sale</h2>
         <span id="result-summary" aria-live="polite">…</span>
       </div>
-
-      <p class="offline-note" id="offline-note" role="status">Offline mode — showing the last saved catalogue.</p>
 
       <div class="skeleton-grid" id="skeleton" aria-hidden="true">
         <div class="skeleton-card"></div>
@@ -210,7 +198,7 @@
 
       <div class="empty-state" id="empty-state" hidden>
         <h3>No wetsuit matches this filter</h3>
-        <p>Try another size, clear the search, or message us — we often have an unlisted suit in the van.</p>
+        <p>Try another size, clear the search, or message us — we often have suits that are not listed here yet.</p>
         <button class="btn btn-accent" type="button" id="reset-filters">
           <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>Reset filters
         </button>
@@ -219,95 +207,94 @@
 
     <section class="info-section wrap" id="info-section" aria-labelledby="info-title">
       <div class="section-head">
-        <h2 id="info-title">Rental info &amp; pickup</h2>
+        <h2 id="info-title">Buying &amp; delivery</h2>
         <span>Wetsuits only — no surfboards</span>
       </div>
 
       <div class="info-grid">
         <article class="info-card">
-          <h3><i class="fa-solid fa-shirt" aria-hidden="true"></i>How the rental works</h3>
+          <h3><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>How buying works</h3>
           <ul>
-            <li>Pick a suit, tap WhatsApp, tell us the day and the spot.</li>
-            <li>Meet us in Aourir or Tamraght — or at your hostel by arrangement.</li>
-            <li>Bring a photo ID or your hotel booking as a deposit.</li>
-            <li>Suits are rinsed and sanitised between every rental.</li>
-            <li>Need a different size after the first wave? Free swap, same day.</li>
+            <li>Pick a suit and tap <strong>Buy on WhatsApp</strong>.</li>
+            <li>Tell us your size and your city in Morocco.</li>
+            <li>We confirm the suit is still available.</li>
+            <li>Pay on delivery, or by transfer if you prefer.</li>
+            <li>Every suit is checked and cleaned before it is sent.</li>
           </ul>
         </article>
 
         <article class="info-card">
-          <h3><i class="fa-solid fa-clock" aria-hidden="true"></i>Opening hours</h3>
-          <ul class="hours-list">
-            <li><span>Monday to Friday</span><b>08:00 – 20:00</b></li>
-            <li><span>Saturday</span><b>08:00 – 20:00</b></li>
-            <li><span>Sunday</span><b>08:30 – 18:00</b></li>
-            <li><span>Dawn patrol</span><b>On request</b></li>
-          </ul>
-          <p>WhatsApp is answered from 07:00, including before sunrise sessions.</p>
+          <h3><i class="fa-solid fa-truck-fast" aria-hidden="true"></i>Delivery across Morocco</h3>
+          <p>We deliver wetsuits anywhere in Morocco. Send us your city on WhatsApp and we will confirm the delivery time and any delivery cost with you before you pay.</p>
+          <p>Sizes S, M, L and XL are usually in stock and ready to send.</p>
         </article>
 
         <article class="info-card">
-          <h3><i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>Where we are</h3>
-          <p><strong>Aourir</strong> — main shop, 4 minutes from Banana Point.<br>
-             <strong>Tamraght</strong> — meet point near Devil’s Rock.</p>
-          <p>Also serving Taghazout, Anchor Point, Panorama and Hash Point. Delivery to your camp or hostel in the Agadir surf zone.</p>
-          <p class="price-unit">Wetsuit rental only. We do not rent surfboards, and a suit is not included with a board elsewhere.</p>
+          <h3><i class="fa-solid fa-handshake" aria-hidden="true"></i>Meet in person</h3>
+          <p>If you are in <strong>Tamraght</strong> or <strong>Taghazout</strong>, we can meet in person so you can try the suit on before you pay.</p>
+          <p>Message us on WhatsApp to arrange a time and place that suits you.</p>
+          <p class="price-unit">We sell wetsuits only. We do not sell surfboards.</p>
         </article>
       </div>
 
       <div class="book-strip">
         <div>
-          <h3>Not sure which thickness you need?</h3>
-          <p>Tell us the month and the spot — we will recommend the exact suit and size.</p>
+          <h3>Not sure which thickness to buy?</h3>
+          <p>Tell us where you surf and in which months — we will recommend the exact suit and size.</p>
         </div>
-        <a class="btn btn-wa" data-wa-link="hero" href="https://wa.me/2126XXXXXXX?text=Hi%20SURF%20CREW%20Agadir%2C%20which%20wetsuit%20do%20you%20recommend%20for%20my%20dates%3F" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i>Get a recommendation</a>
+        <a class="btn btn-wa" data-wa-link="hero" href="https://wa.me/212611321357?text=Hi%20SURF%20WETSUIT%2C%20which%20wetsuit%20do%20you%20recommend%20for%20me%3F" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i>Get a recommendation</a>
       </div>
     </section>
 
     <section class="faq wrap" id="faq-section" aria-labelledby="faq-title">
       <div class="section-head">
         <h2 id="faq-title">Frequently asked</h2>
-        <span>Wetsuit rentals only</span>
+        <span>Wetsuit sales only</span>
       </div>
 
       <details>
-        <summary>Do you rent surfboards as well?</summary>
-        <p>No. SURF CREW Agadir rents wetsuits only, so every suit in the quiver is kept in rental condition and properly sanitised. For boards, ask us on WhatsApp and we will point you to a trusted shop in Aourir or Tamraght.</p>
+        <summary>Do you sell surfboards as well?</summary>
+        <p>No. We sell wetsuits only, so every suit we hold is checked and cleaned before it goes out. For boards, ask us on WhatsApp and we will point you to a trusted shop in the area.</p>
       </details>
 
       <details>
-        <summary>Which thickness should I book for my trip?</summary>
-        <p>June to September: 2/2mm or 3/2mm. October to May: 4/3mm. December to February, or if you feel the cold: 5/4mm semi-dry.</p>
+        <summary>Which thickness should I buy?</summary>
+        <p>If you surf here year round: a 4/3mm covers October to May and a 3/2mm covers the summer. June to September: 2/2mm or 3/2mm. December to February, or if you feel the cold: 5/4mm semi-dry.</p>
       </details>
 
       <details>
-        <summary>How do I pay and what is the deposit?</summary>
-        <p>Cash in MAD on pickup, or arrange a transfer with us in advance. We hold a photo ID or your accommodation booking as a deposit and return it with the suit.</p>
+        <summary>How do I pay, and can I try the suit first?</summary>
+        <p>If you are in Tamraght or Taghazout, yes — we meet in person and you try it on before you pay. For delivery elsewhere in Morocco you pay on delivery, or by transfer in advance if you prefer.</p>
       </details>
 
       <details>
-        <summary>Can I collect the suit the evening before?</summary>
-        <p>Yes, collection from 18:00 the day before costs nothing extra when the suit is free, so you can be in the water at first light.</p>
+        <summary>Do you deliver across Morocco?</summary>
+        <p>Yes. Message us on WhatsApp with your city and we will confirm the delivery time and any delivery cost before you order.</p>
       </details>
 
       <details>
-        <summary>Does the site work without internet at the beach?</summary>
-        <p>Yes. Install it on your phone from your browser menu (“Add to Home Screen”). The catalogue then opens offline from your last visit, and your WhatsApp order queues until you have signal again.</p>
+        <summary>Are the suits new or used?</summary>
+        <p>Both, and each listing says so in its description. Used suits are fully checked and cleaned before sale, which is why they cost less. Ask us if you want to know the condition of a particular suit.</p>
+      </details>
+
+      <details>
+        <summary>What if the size is wrong?</summary>
+        <p>Tell us straight away. If you are nearby we will swap it for another size, and if you are further away in Morocco we will help you arrange sending it back.</p>
       </details>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <strong>SURF CREW Agadir — wetsuit rentals</strong>
-      <span>Aourir • Tamraght • Taghazout • Agadir, Morocco</span>
+      <strong>SURF WETSUIT — wetsuits for sale</strong>
+      <span>Delivery across Morocco • Meet in person in Tamraght &amp; Taghazout</span>
       <div class="footer-links">
         <a href="#catalog-section">Catalogue</a>
-        <a href="#info-section">Rental info</a>
+        <a href="#info-section">Buying &amp; delivery</a>
         <a href="#faq-section">FAQ</a>
-        <a href="admin/">Admin</a>
       </div>
-      <span>&copy; <span id="year">2026</span> SURF CREW Agadir. Prices in MAD, per day. Wetsuits only, no surfboards.</span>
+      <span>WhatsApp <a href="https://wa.me/212611321357" target="_blank" rel="noopener">0611321357</a></span>
+      <span>&copy; <span id="year">2026</span> SURF WETSUIT. Prices in MAD, each. Wetsuits only, no surfboards.</span>
     </div>
   </footer>
 
@@ -331,17 +318,29 @@
     </div>
   </div>
 
-  <!-- Install to home screen prompt -->
-  <div class="install-bar" id="install-bar" role="region" aria-label="Install app">
-    <p id="install-text">Install SURF CREW for offline size checks.</p>
-    <button id="install-go" type="button">Install</button>
-    <button class="dismiss" id="install-dismiss" type="button" aria-label="Dismiss install prompt"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
-  </div>
-
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="js/app.js" defer></script>
   <script>
+    /* ---------------------------------------------------------------------
+       SERVICE WORKER CLEANUP (safe to delete once you are sure it is done)
+       ---------------------------------------------------------------------
+       An earlier version of this site was a Progressive Web App whose service
+       worker cached js/app.js cache-first. Such a worker keeps serving the OLD
+       JavaScript to returning visitors even after the file is fixed on the
+       server. We no longer want a service worker at all, so remove it.
+       --------------------------------------------------------------------- */
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function (regs) {
+        regs.forEach(function (reg) { reg.unregister(); });
+      }).catch(function () {});
+      if (window.caches && caches.keys) {
+        caches.keys().then(function (keys) {
+          keys.forEach(function (k) { caches.delete(k); });
+        }).catch(function () {});
+      }
+    }
+
     /* Netlify Identity sends invite / password-recovery links back to the site
        root. Forward the token to the admin panel so the owner can set a
        password without editing the URL by hand. */
@@ -353,4 +352,3 @@
   </script>
 </body>
 </html>
-
